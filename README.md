@@ -3,6 +3,8 @@
 ## Live
 https://jundran.github.io/blog-manager
 
+**The backend for this app uses a free tier web service hosted by render.com. It sleeps after not being in use for 15 minutes. If the live website appears not to be working, please wait 30 seconds for a response to network actions before reloading the page.**
+
 ## Description
 TOP - Blog API project - Manager
 
