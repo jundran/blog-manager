@@ -1,0 +1,51 @@
+@use 'v'
+
+button
+	cursor: pointer
+	+ button
+		margin-left: 20px
+
+form ul
+	padding: 0
+
+label, span:first-of-type
+	font-weight: 600
+	@media (max-width: v.$mobile)
+		margin-bottom: 4px
+
+input
+	padding: 3px
+
+textarea
+	height: 500px
+	font-size: 1rem
+	font-family: inherit
+	line-height: 1.5
+	padding: 10px
+
+hr
+	margin: 16px 0
+
+// Link
+.header-link
+	color: currentColor
+	text-decoration: none
+	font-size: 1.2rem
+	font-weight: 600
+	&:hover
+		text-decoration: underline
+
+// Button
+.button-link
+	color: navy
+	font-weight: 600
+	cursor: pointer
+	background: none
+	border: none
+	padding: 0
+	&:hover
+		text-decoration: underline
+
+// List
+.simple-list
+	list-style: none
