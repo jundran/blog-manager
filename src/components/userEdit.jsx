@@ -5,15 +5,15 @@ import ErrorsBox from './errorsBox'
 
 export default function UserEdit ({ close }) {
 	const [errors, setErrors] = useState([])
-	const { user, setUser } = useUser()
+	const { user, setUser, setUserAndTokens, accessToken, fetchCatch } = useUser()
 
-	function handleSubmit (e) {
+	function handleSubmit (e, newToken) {
 		e.preventDefault()
 
 		fetch(`${import.meta.env.VITE_API}/api/v1/user`, {
 			method: 'PUT',
 			headers: {
-				'Authorization': `Bearer ${user.token}`,
+				'Authorization': `Bearer ${newToken || accessToken}`,
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'
 			},
@@ -26,24 +26,25 @@ export default function UserEdit ({ close }) {
 			})
 		}).then(res => res.json())
 			.then(json => {
-				if (json.validationMessages) setErrors(json.validationMessages)
-				else if (json.user) {
+				if (json.originalError === 'jwt expired') throw Error('Expired token')
+				else if (json.validationMessages) setErrors(json.validationMessages)
+				else {
 					setUser(json.user)
-					if (close) close()
+					close()
 				}
-				else console.error('No errors or user returned')
-			})
-			.catch(err => console.error(err))
+			}).catch(err => fetchCatch(err, newToken =>	handleSubmit(e, newToken)))
 	}
 
-	function handleDelete () {
+	function handleDelete (newToken) {
 		fetch(`${import.meta.env.VITE_API}/api/v1/user/`, {
 			method: 'DELETE',
-			headers: { 'Authorization': `Bearer ${user.token}` }
+			headers: { 'Authorization': `Bearer ${newToken || accessToken}` }
 		}).then(res => {
-			if (res.status === 204) setUser(null)
-			else console.error('Failed to delete user account')
-		}).catch(err => console.error(err))
+			const headers = res.headers.get('Content-Type') || ''
+			if (res.status === 204) setUserAndTokens(null)
+			else if (headers.match(/application\/json/)) throw Error('Expired token')
+			else throw Error('Failed to logout user')
+		}).catch(err => fetchCatch(err, newToken =>	handleDelete(newToken)))
 	}
 
 	const ph = 'Leave blank to keep existing password'

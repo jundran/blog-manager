@@ -5,29 +5,37 @@ import Blog from '../components/blog'
 import BlogEdit from '../components/blogEdit'
 import useUser from '../components/context'
 import NotSignedIn from '../components/notSignedIn'
+import NotFound from '../components/notFound'
 
 export default function BlogPage () {
 	const [editmode, setEditMode] = useState(false)
 	const [blog, setBlog] = useState(null)
 	const { id } = useParams()
-	const { user } = useUser()
+	const { user, accessToken, fetchCatch } = useUser()
 
 	useEffect(() => {
-		if (!user) return
-		fetch(`${import.meta.env.VITE_API}/api/v1/blog/${id}`, {
-			headers: {
-				'Authorization': `Bearer ${user.token}`,
-				'Accept': 'application/json'
-			}
-		}).then(res => res.json())
-			.then(json => setBlog(json.document))
-			.catch(err => console.error(err))
-	}, [id, user])
+		(function getBlog (newToken) {
+			if (!user) return
+			fetch(`${import.meta.env.VITE_API}/api/v1/blog/${id}`, {
+				headers: {
+					'Authorization': `Bearer ${newToken || accessToken}`,
+					'Accept': 'application/json'
+				}
+			}).then(res => res.json())
+				.then(json => {
+					if (json.originalError === 'jwt expired') throw Error('Expired token')
+					else setBlog(json.document)
+				})
+				.catch(err => fetchCatch(err, newToken =>	getBlog(newToken)))
+		})()
+	}, [id, user, accessToken, fetchCatch])
 
 	function handleClose (updatedBlog) {
 		setBlog(updatedBlog)
 		setEditMode(false)
 	}
+
+	if (blog === undefined) return <NotFound />
 
 	return (
 		<>

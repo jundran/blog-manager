@@ -8,7 +8,6 @@ import useUser from './context'
 export default function Comments ({ blog }) {
 	const [comments, setComments] = useState(blog.comments)
 
-	// Rerender comments without deleted one
 	function handleDelete (id) {
 		setComments(comments.filter(comment => comment._id !== id))
 	}
@@ -27,16 +26,18 @@ export default function Comments ({ blog }) {
 }
 
 function Comment ({ data, blogId, deleteComment }) {
-	const { user } = useUser()
+	const { accessToken, fetchCatch } = useUser()
 
-	function handleDeleteComment () {
+	function handleDeleteComment (newToken) {
 		fetch(`${import.meta.env.VITE_API}/api/v1/blog/${blogId}/comment/${data._id}`, {
 			method: 'DELETE',
-			headers: { 'Authorization': `Bearer ${user.token}` }
+			headers: { 'Authorization': `Bearer ${newToken || accessToken}` }
 		}).then(res => {
+			const headers = res.headers.get('Content-Type') || ''
 			if (res.status === 204) deleteComment()
+			else if (headers.match(/application\/json/)) throw Error('Expired token')
 			else console.error('Unable to delete blog.')
-		}).catch(err => console.error(err))
+		}).catch(err => fetchCatch(err, newToken =>	handleDeleteComment(newToken)))
 	}
 
 	return (

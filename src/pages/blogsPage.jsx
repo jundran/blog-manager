@@ -6,19 +6,23 @@ import NotSignedIn from '../components/notSignedIn'
 
 export default function BlogsPage () {
 	const [blogs, setBlogs] = useState([])
-	const { user } = useUser()
+	const { user, accessToken, fetchCatch } = useUser()
 
 	useEffect(() => {
-		if (!user) return
-		fetch(`${import.meta.env.VITE_API}/api/v1/blog/current-user`, {
-			headers: {
-				'Authorization': `Bearer ${user.token}`,
-				'Accept': 'application/json'
-			}
-		}).then(res => res.json())
-			.then(json => setBlogs(json.documents))
-			.catch(err => console.error(err))
-	}, [user])
+		(function getBlogs (newToken) {
+			if (!user) return
+			fetch(`${import.meta.env.VITE_API}/api/v1/blog/current-user`, {
+				headers: {
+					'Authorization': `Bearer ${newToken || accessToken}`,
+					'Accept': 'application/json'
+				}
+			}).then(res => res.json()
+			).then(json => {
+				if (json.originalError === 'jwt expired') throw Error('Expired token')
+				else setBlogs(json.documents)
+			}).catch(err => fetchCatch(err, newToken =>	getBlogs(newToken)))
+		})()
+	}, [user, accessToken, fetchCatch])
 
 	return (
 		<>

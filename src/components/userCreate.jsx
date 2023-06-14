@@ -4,7 +4,7 @@ import ErrorsBox from './errorsBox'
 
 export default function UserCreate () {
 	const [errors, setErrors] = useState([])
-	const { setUser } = useUser()
+	const { setUserAndTokens } = useUser()
 
 	function handleSubmit (e) {
 		e.preventDefault()
@@ -25,8 +25,7 @@ export default function UserCreate () {
 		}).then(res => res.json())
 			.then(json => {
 				if (json.validationMessages) setErrors(json.validationMessages)
-				else if (json.user) setUser(json.user)
-				else console.error('No errors or user returned')
+				else setUserAndTokens(json)
 			})
 			.catch(err => console.error(err))
 	}

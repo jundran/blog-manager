@@ -4,12 +4,11 @@ import { useState } from 'react'
 
 export default function UserLogin () {
 	const [errors, setErrors] = useState([])
-	const { setUser } = useUser()
+	const { setUserAndTokens } = useUser()
 
 	function handleSubmit (e) {
 		e.preventDefault()
-
-		fetch(`${import.meta.env.VITE_API}/api/v1/user/login`, {
+		fetch(`${import.meta.env.VITE_API}/api/v1/auth/login`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -22,11 +21,11 @@ export default function UserLogin () {
 		}).then(res => res.json())
 			.then(json => {
 				if (json.message) setErrors([json.message])
-				else if (json.user) setUser(json.user)
-				else console.error('No errors or user returned')
+				else setUserAndTokens(json)
 			})
 			.catch(err => console.error(err))
 	}
+
 	return (
 		<div>
 			<h2>Login</h2>

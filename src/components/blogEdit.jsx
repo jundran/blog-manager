@@ -6,15 +6,15 @@ import useUser from './context'
 export default function BlogEdit ({ blog, close }) {
 	const [errors, setErrors] = useState([])
 	const textarea = useRef()
-	const { user } = useUser()
+	const { accessToken, fetchCatch } = useUser()
 
-	function handleSubmit (e) {
+	function handleSubmit (e, newToken) {
 		e.preventDefault()
 
 		fetch(`${import.meta.env.VITE_API}/api/v1/blog/${blog._id}`, {
 			method: 'PUT',
 			headers: {
-				'Authorization': `Bearer ${user.token}`,
+				'Authorization': `Bearer ${newToken || accessToken}`,
 				'Access-Control-Allow-Origin': origin,
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'
@@ -28,8 +28,8 @@ export default function BlogEdit ({ blog, close }) {
 			.then(json => {
 				if (json.validationMessages) setErrors(json.validationMessages)
 				else if (json.document) close(json.document)
-			})
-			.catch(err => console.error(err))
+				else if (json.originalError === 'jwt expired') throw Error('Expired token')
+			}).catch(err => fetchCatch(err, newToken =>	handleSubmit(e, newToken)))
 	}
 
 	function handleAutofill () {

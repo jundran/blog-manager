@@ -9,16 +9,18 @@ import Comments from './blogComments'
 
 export default function Blog ({ blog, edit }) {
 	const navigate = useNavigate()
-	const { user } = useUser()
+	const { accessToken, fetchCatch } = useUser()
 
-	function handleDelete () {
+	function handleDelete (newToken) {
 		fetch(`${import.meta.env.VITE_API}/api/v1/blog/${blog._id}`, {
 			method: 'DELETE',
-			headers: { 'Authorization': `Bearer ${user.token}` }
+			headers: { 'Authorization': `Bearer ${newToken || accessToken}` }
 		}).then(res => {
+			const headers = res.headers.get('Content-Type') || ''
 			if (res.status === 204) navigate('/blog')
+			else if (headers.match(/application\/json/)) throw Error('Expired token')
 			else console.error('Unable to delete blog.')
-		}).catch(err => console.error(err))
+		}).catch(err => fetchCatch(err, newToken =>	handleDelete(newToken)))
 	}
 
 	return (
