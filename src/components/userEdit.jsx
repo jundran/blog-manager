@@ -21,6 +21,7 @@ export default function UserEdit ({ close }) {
 				firstname: e.target.firstname.value,
 				surname: e.target.surname.value,
 				email: e.target.email.value,
+				existingPassword: e.target.existingPassword.value,
 				password: e.target.password.value,
 				passwordConfirm: e.target.passwordConfirm.value
 			})
@@ -66,6 +67,12 @@ export default function UserEdit ({ close }) {
 					<li className="columns">
 						<label htmlFor="email">Email</label>
 						<input type="email" name="email" defaultValue={user?.email} />
+					</li>
+					<li className="columns">
+						<label htmlFor="existingPassword">Current Password</label>
+						<input type="password" name="existingPassword"
+							placeholder='Required only if changing password'
+						/>
 					</li>
 					<li className="columns">
 						<label htmlFor="password">Password</label>

@@ -35,6 +35,16 @@ export function ContextProvider ({ children }) {
 		})
 	}, [])
 
+	const fetchCatch = useCallback((err, callback) => {
+		if (err.message === 'Expired token') {
+			getNewAccessToken(refreshToken || getLocalStorageItem('refreshToken'))
+				.then(newToken =>	callback(newToken))
+				.catch(err => console.error(err))
+		} else {
+			console.error(err)
+		}
+	}, [getNewAccessToken, refreshToken])
+
 	useEffect(() => {
 		(async function getUser (newToken) {
 			const accessToken = getLocalStorageItem('accessToken')
@@ -69,16 +79,6 @@ export function ContextProvider ({ children }) {
 			deleteLocalStorageItem('refreshToken')
 		}
 	}
-
-	const fetchCatch = useCallback((err, callback) => {
-		if (err.message === 'Expired token') {
-			getNewAccessToken(refreshToken)
-				.then(newToken =>	callback(newToken))
-				.catch(err => console.error(err))
-		} else {
-			console.error(err)
-		}
-	}, [getNewAccessToken, refreshToken])
 
 	return (
 		<Context.Provider value={{
