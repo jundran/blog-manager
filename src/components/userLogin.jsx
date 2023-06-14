@@ -35,11 +35,11 @@ export default function UserLogin () {
 				<ul>
 					<li className="columns">
 						<label htmlFor="email">Email</label>
-						<input type="email" name="email" />
+						<input type="email" name="email" autoComplete='email' />
 					</li>
 					<li className="columns">
 						<label htmlFor="password">Password</label>
-						<input type="password" name="password" />
+						<input type="password" name="password" autoComplete='current-password' />
 					</li>
 				</ul>
 				<button>Log In</button>

@@ -44,7 +44,7 @@ export default function BlogCreate () {
 				<ul>
 					<li className="columns">
 						<label htmlFor="title">Title</label>
-						<input name="title"/>
+						<input name="title" />
 					</li>
 					<li className="columns">
 						<label htmlFor="text">Blog Text</label>

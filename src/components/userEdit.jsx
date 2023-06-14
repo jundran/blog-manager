@@ -58,29 +58,33 @@ export default function UserEdit ({ close }) {
 				<ul>
 					<li className="columns">
 						<label htmlFor="firstname">Firstname</label>
-						<input name="firstname" defaultValue={user?.firstname} />
+						<input name="firstname" defaultValue={user?.firstname} autoComplete='off'/>
 					</li>
 					<li className="columns">
 						<label htmlFor="surname">Surname</label>
-						<input name="surname" defaultValue={user?.surname} />
+						<input name="surname" defaultValue={user?.surname} autoComplete='off'/>
 					</li>
 					<li className="columns">
 						<label htmlFor="email">Email</label>
-						<input type="email" name="email" defaultValue={user?.email} />
+						<input type="email" name="email" defaultValue={user?.email} autoComplete='off'/>
 					</li>
 					<li className="columns">
 						<label htmlFor="existingPassword">Current Password</label>
 						<input type="password" name="existingPassword"
-							placeholder='Required only if changing password'
+							placeholder='Required only if changing password' autoComplete='current-password'
 						/>
 					</li>
 					<li className="columns">
 						<label htmlFor="password">Password</label>
-						<input type="password" name="password" placeholder={ph }/>
+						<input type="password" name="password" placeholder={ph }
+							autoComplete='new-password'
+						/>
 					</li>
 					<li className="columns">
 						<label htmlFor="passwordConfirm">Password Confirm</label>
-						<input type="password" name="passwordConfirm" placeholder={ph} />
+						<input type="password" name="passwordConfirm" placeholder={ph}
+							autoComplete='new-password'
+						/>
 					</li>
 				</ul>
 				<button>Save</button>

@@ -39,23 +39,23 @@ export default function UserCreate () {
 				<ul>
 					<li className="columns">
 						<label htmlFor="firstname">Firstname</label>
-						<input name="firstname" />
+						<input name="firstname" autoComplete='given-name'/>
 					</li>
 					<li className="columns">
 						<label htmlFor="surname">Surname</label>
-						<input name="surname" />
+						<input name="surname" autoComplete='family-name'/>
 					</li>
 					<li className="columns">
 						<label htmlFor="email">Email</label>
-						<input type="email" name="email" />
+						<input type="email" name="email" autoComplete='email' />
 					</li>
 					<li className="columns">
 						<label htmlFor="password">Password</label>
-						<input type="password" name="password" />
+						<input type="password" name="password" autoComplete='new-password'/>
 					</li>
 					<li className="columns">
 						<label htmlFor="passwordConfirm">Password Confirm</label>
-						<input type="password" name="passwordConfirm" />
+						<input type="password" name="passwordConfirm" autoComplete='new-password'/>
 					</li>
 				</ul>
 				<button>Create User</button>
