@@ -49,7 +49,12 @@ export function ContextProvider ({ children }) {
 		(async function getUser (newToken) {
 			const accessToken = getLocalStorageItem('accessToken')
 			const refreshToken = getLocalStorageItem('refreshToken')
-			if (!accessToken || !refreshToken) return
+			if (!accessToken || !refreshToken) {
+				console.log('Wake up request sent to server')
+				return fetch(`${import.meta.env.VITE_API}/health-check`)
+					.then(res => console.log('Server responded with code' + res.status))
+					.catch(err => console.error(err))
+			}
 			setAccessToken(accessToken)
 			setRefreshToken(refreshToken)
 			fetch(`${import.meta.env.VITE_API}/api/v1/user`, {
